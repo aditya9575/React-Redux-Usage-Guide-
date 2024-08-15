@@ -1,0 +1,159 @@
+Detailed Guide on Using React Redux with Redux Toolkit
+Step-by-Step Process
+
+1. Install Required Packages
+Start by installing the necessary packages for Redux Toolkit and React Redux.
+npm install @reduxjs/toolkit react-redux
+
+2. Create the Redux Store
+Create a redux Folder
+Inside your src folder, create a new folder named redux. Then, create a file named store.js inside the redux folder.
+
+Configure the Store
+In store.js, configure the store by importing and using configureStore from Redux Toolkit.
+// src/redux/store.js
+import { configureStore } from '@reduxjs/toolkit';
+
+export const store = configureStore({
+  reducer: {},
+});
+
+3. Provide the Store to Your App
+To make the Redux store accessible to your entire app, you need to wrap your main app component with the Provider component from react-redux.
+
+Modify main.jsx
+// src/main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import App from './App';
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+4. Create a Slice
+A slice in Redux Toolkit contains the reducer logic and actions for a specific feature of your app.
+
+Create a counter Slice
+Inside the redux folder, create a new folder named counter and within it, a file named counterSlice.js.
+
+Define the Slice
+In counterSlice.js, define the slice by importing createSlice from Redux Toolkit, defining the initial state, and creating the slice.
+// src/redux/counter/counterSlice.js
+import { createSlice } from '@reduxjs/toolkit';
+
+const initialState = {
+  value: 0,
+};
+
+export const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    multiply: (state) => {
+      state.value *= 2;
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
+    },
+  },
+});
+
+export const { increment, decrement, multiply, incrementByAmount } = counterSlice.actions;
+
+export default counterSlice.reducer;
+
+5. Add Slice to Store
+Now, make the store aware of the counterSlice.
+
+Modify store.js
+// src/redux/store.js
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counter/counterSlice';
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+  },
+});
+
+6. Use the State and Actions in Components
+To use the state and actions defined in your slice, you need to use the useSelector and useDispatch hooks from react-redux.
+
+Example: Using Counter State in a Component
+// src/components/CounterComponent.jsx
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, decrement, multiply, incrementByAmount } from '../redux/counter/counterSlice';
+
+const CounterComponent = () => {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <button onClick={() => dispatch(decrement())}>-</button>
+      Current count is {count}
+      <button onClick={() => dispatch(increment())}>+</button>
+      <br />
+      <button onClick={() => dispatch(multiply())}>Multiply by 2</button>
+      <br />
+      <button onClick={() => dispatch(incrementByAmount(5))}>Increment by amount</button>
+    </div>
+  );
+};
+
+export default CounterComponent;
+
+7. Passing State to Navbar Component
+To pass the counter value from the app to the Navbar component using Redux, follow these steps:
+
+Example: Navbar Component
+// src/components/Navbar.jsx
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+const Navbar = () => {
+  const count = useSelector((state) => state.counter.value);
+
+  return (
+    <nav>
+      <h1>Counter: {count}</h1>
+    </nav>
+  );
+};
+
+export default Navbar;
+
+8. Integrate Navbar Component
+Integrate the Navbar component into your main app component to display the counter value.
+// src/App.jsx
+import React from 'react';
+import CounterComponent from './components/CounterComponent';
+import Navbar from './components/Navbar';
+
+const App = () => {
+  return (
+    <div>
+      <Navbar />
+      <CounterComponent />
+    </div>
+  );
+};
+
+export default App;
+
+Summary
+By following these steps, you set up Redux in your React application using Redux Toolkit, created a counter slice, and passed the counter state to a Navbar component.
+You also learned how to use useSelector and useDispatch hooks to interact with your Redux store.
