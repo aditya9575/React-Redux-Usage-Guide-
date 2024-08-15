@@ -1,0 +1,8 @@
+As we know that in redux -> our Reducer function must be pure that takes input and produces an output without any side effects happening 
+So now the question rises that where will the side effect come in place while using redex-> reducer function as in case of sending a http request on dispatching some action 
+
+----------------------------------------------> We have two things :
+
+OPTION A) we can put it inside the component directly using useEffect
+
+OPTION B) We can write our own action creator functions
